@@ -31,8 +31,8 @@ def main() -> None:
                              'can be either resnet50 or mobilenet0.25 when using RetinaFace')
     parser.add_argument('--detection-alternative-pth', '-dp', default=None,
                         help='Alternative pth file to be loaded for face detection')
-    parser.add_argument('--detection-device', '-dd', default='cpu',
-                        help='Device to be used for face detection (default=cpu)')
+    parser.add_argument('--detection-device', '-dd', default='cuda',
+                        help='Device to be used for face detection (default=cuda)')
 
     parser.add_argument('--alignment-threshold', '-at', type=float, default=0.2,
                         help='Score threshold used when visualising detected landmarks (default=0.2)'),
@@ -43,8 +43,8 @@ def main() -> None:
                              'or 2DFAN2_ALT')
     parser.add_argument('--alignment-alternative-pth', '-ap', default=None,
                         help='Alternative pth file to be loaded for face alaignment')
-    parser.add_argument('--alignment-device', '-ad', default='cpu',
-                        help='Device to be used for face alignment (default=cpu)')
+    parser.add_argument('--alignment-device', '-ad', default='cuda',
+                        help='Device to be used for face alignment (default=cuda)')
 
     parser.add_argument('--emotion-method', '-em', default='emonet',
                         help='Emotion recognition method, must be set to EmoNet')
@@ -53,8 +53,8 @@ def main() -> None:
                              'EmoNet248, EmoNet245, EmoNet248_alt, or EmoNet245_alt')
     parser.add_argument('--emotion-alternative-pth', '-ep', default=None,
                         help='Alternative pth file to be loaded for emotion recognition')
-    parser.add_argument('--emotion-device', '-ed', default='cpu',
-                        help='Device to be used for emotion recognition (default=cpu)')
+    parser.add_argument('--emotion-device', '-ed', default='cuda',
+                        help='Device to be used for emotion recognition (default=cuda)')
     args = parser.parse_args()
 
     # Set benchmark mode flag for CUDNN
@@ -175,16 +175,16 @@ def main() -> None:
 
                 # Rendering
                 for idx, (face, lm, sc) in enumerate(zip(faces, landmarks, scores)):
-                    bbox = face[:4].astype(int)
-                    cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color=(0, 0, 255), thickness=2)
-                    plot_landmarks(frame, lm, sc, threshold=args.alignment_threshold)
-                    if len(face) > 5:
-                        plot_landmarks(frame, face[5:].reshape((-1, 2)), pts_radius=3)
+                    # bbox = face[:4].astype(int)
+                    # cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color=(0, 0, 255), thickness=2)
+                    # plot_landmarks(frame, lm, sc, threshold=args.alignment_threshold)
+                    # if len(face) > 5:
+                        # plot_landmarks(frame, face[5:].reshape((-1, 2)), pts_radius=3)
                     emo = emotion_recogniser.config.emotion_labels[emotions['emotion'][idx]].title()
                     val, ar = emotions['valence'][idx], emotions['arousal'][idx]
-                    text_content = f'{emo} ({val: .01f}, {ar: .01f})'
-                    cv2.putText(frame, text_content, (bbox[0], bbox[1] - 10), cv2.FONT_HERSHEY_DUPLEX,
-                                0.5, emotion_colours[emotions['emotion'][idx]], lineType=cv2.LINE_AA)
+                    # text_content = f'{emo} ({val: .01f}, {ar: .01f})'
+                    # cv2.putText(frame, text_content, (bbox[0], bbox[1] - 10), cv2.FONT_HERSHEY_DUPLEX,
+                                # 0.5, emotion_colours[emotions['emotion'][idx]], lineType=cv2.LINE_AA)
 
                 # store data in tables
                 table1.append([frame_number, emo])
@@ -195,13 +195,13 @@ def main() -> None:
                     out_vid.write(frame)
 
                 # Display the frame
-                if using_webcam or not args.no_display:
-                    has_window = True
-                    cv2.imshow(window_title, frame) 
-                    key = cv2.waitKey(1) % 2 ** 16
-                    if key == ord('q') or key == ord('Q'):
-                        print('\'Q\' pressed, we are done here.')
-                        break
+                # if using_webcam or not args.no_display:
+                    # has_window = True
+                    # cv2.imshow(window_title, frame) 
+                    # key = cv2.waitKey(1) % 2 ** 16
+                    # if key == ord('q') or key == ord('Q'):
+                        # print('\'Q\' pressed, we are done here.')
+                        # break
                 frame_number += 1
     finally:
         if has_window:
