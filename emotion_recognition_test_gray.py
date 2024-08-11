@@ -15,6 +15,7 @@ def main() -> None:
     parser = ArgumentParser()
     parser.add_argument('--input', '-i', help='Input video path or webcam index (default=0)', default=0)
     parser.add_argument('--output', '-o', help='Output file path', default=None)
+    parser.add_argument('--output-dir', '-od', help='Directory to store output files', default='output')    
     parser.add_argument('--fourcc', '-f', help='FourCC of the output video (default=mp4v)',
                         type=str, default='mp4v')
     parser.add_argument('--benchmark', '-b', help='Enable benchmark mode for CUDNN',
@@ -57,6 +58,10 @@ def main() -> None:
                         help='Device to be used for emotion recognition (default=cuda)')
     args = parser.parse_args()
 
+    # Create output directory if it doesn't exist
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
+    
     # Set benchmark mode flag for CUDNN
     torch.backends.cudnn.benchmark = args.benchmark
 
@@ -127,7 +132,8 @@ def main() -> None:
 
         # Open the output video (if a path is given)
         if args.output is not None:
-            out_vid = cv2.VideoWriter(args.output, fps=vid.get(cv2.CAP_PROP_FPS),
+            output_path = os.path.join(args.output_dir, args.output)
+            out_vid = cv2.VideoWriter(output_path, fps=vid.get(cv2.CAP_PROP_FPS),
                                       frameSize=(int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
                                                  int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))),
                                       fourcc=cv2.VideoWriter_fourcc(*args.fourcc))
@@ -213,8 +219,8 @@ def main() -> None:
         print('All done.')
         table1 = np.array(table1)
         table2 = np.array(table2)
-        np.savetxt('table1.csv', table1, delimiter=',', comments='', header='Frame,Emotion', fmt='%s')
-        np.savetxt('table2.csv', table2, delimiter=',', comments='', header='Frame,Emotion,Arousal,Valence', fmt='%s')
+        np.savetxt(os.path.join(args.output_dir, 'table1.csv'), table1, delimiter=',', comments='', header='Frame,Emotion', fmt='%s')
+        np.savetxt(os.path.join(args.output_dir, 'table2.csv'), table2, delimiter=',', comments='', header='Frame,Emotion,Arousal,Valence', fmt='%s')
 
 if __name__ == '__main__':
     main()
