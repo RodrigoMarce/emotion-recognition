@@ -181,16 +181,16 @@ def main() -> None:
 
                 # Rendering
                 for idx, (face, lm, sc) in enumerate(zip(faces, landmarks, scores)):
-                    # bbox = face[:4].astype(int)
-                    # cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color=(0, 0, 255), thickness=2)
-                    # plot_landmarks(frame, lm, sc, threshold=args.alignment_threshold)
-                    # if len(face) > 5:
-                        # plot_landmarks(frame, face[5:].reshape((-1, 2)), pts_radius=3)
+                    bbox = face[:4].astype(int)
+                    cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color=(0, 0, 255), thickness=2)
+                    plot_landmarks(frame, lm, sc, threshold=args.alignment_threshold)
+                    if len(face) > 5:
+                        plot_landmarks(frame, face[5:].reshape((-1, 2)), pts_radius=3)
                     emo = emotion_recogniser.config.emotion_labels[emotions['emotion'][idx]].title()
                     val, ar = emotions['valence'][idx], emotions['arousal'][idx]
-                    # text_content = f'{emo} ({val: .01f}, {ar: .01f})'
-                    # cv2.putText(frame, text_content, (bbox[0], bbox[1] - 10), cv2.FONT_HERSHEY_DUPLEX,
-                                # 0.5, emotion_colours[emotions['emotion'][idx]], lineType=cv2.LINE_AA)
+                    text_content = f'{emo} ({val: .01f}, {ar: .01f})'
+                    cv2.putText(frame, text_content, (bbox[0], bbox[1] - 10), cv2.FONT_HERSHEY_DUPLEX,
+                                0.5, emotion_colours[emotions['emotion'][idx]], lineType=cv2.LINE_AA)
 
                 # store data in tables
                 table1.append([frame_number, emo])
