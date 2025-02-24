@@ -200,14 +200,14 @@ def main() -> None:
                 if out_vid is not None:
                     out_vid.write(frame)
 
-                # Display the frame
-                # if using_webcam or not args.no_display:
-                    # has_window = True
-                    # cv2.imshow(window_title, frame) 
-                    # key = cv2.waitKey(1) % 2 ** 16
-                    # if key == ord('q') or key == ord('Q'):
-                        # print('\'Q\' pressed, we are done here.')
-                        # break
+                Display the frame
+                if using_webcam or not args.no_display:
+                    has_window = True
+                    cv2.imshow(window_title, frame) 
+                    key = cv2.waitKey(1) % 2 ** 16
+                    if key == ord('q') or key == ord('Q'):
+                        print('\'Q\' pressed, we are done here.')
+                        break
                 frame_number += 1
     finally:
         if has_window:
