@@ -10,7 +10,8 @@ This project implements a pre-trained facial expression recognition model inspir
 
 ## How to Test
 * To test on live video: `python emotion_recognition_test.py [-i webcam_index]`
-* To test on a video file: `python emotion_recognition_test.py [-i input_file] [-o output_file]`
+* To test on a video file: `python emotion_recognition_test.py [-i input_file] [-o output_file]`  
+  
 Press 'Q' to exit the program.
 
 ## Features
